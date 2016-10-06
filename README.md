@@ -15,7 +15,7 @@ This edit does that :
 - Change book from tool to item and add group book so it can be placed in bookshelves
 - Replace label by textarea in formspec for automatic break lines
 - Add use of files for tab content 
-- Add option to add to inventory
+- Add option to add to inventory to add to inventory of new player
 
 License: Licenses: code LGPL 2.1 media CC BY-SA 3.0
 Created by: UjEdwin
