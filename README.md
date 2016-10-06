@@ -9,9 +9,9 @@ https://forum.minetest.net/viewtopic.php?f=11&t=13366
 All new players will get ther own books.
 You can easy add / change tabs, content and the title of it."
 
- License: Licenses: code LGPL 2.1 media CC BY-SA 3.0
- Created by: UjEdwin
- Date: 2016-03-28
+- License: Licenses: code LGPL 2.1 media CC BY-SA 3.0
+  Created by: UjEdwin
+  Date: 2016-03-28
 
 
 This edit does that :
