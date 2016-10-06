@@ -41,11 +41,12 @@ serverguide_Tab_Text[5]=S("Help info\nHelp you self\n Only call a moderator or a
 
 -- look for text files to use text files if present
 if use_text_files then 
+	
 	-- Text files folder
 	local MOD_NAME = minetest.get_current_modname()
 	-- Path to the text files
 	-- Use minetest.get_worldpath() to use world specific messages
-	local rep = minetest.get_modpath(MOD_NAME)
+	local rep = minetest.get_worldpath(MOD_NAME)
 	
 	-- Define langage (code from intllib mod)
 	local LANG = minetest.setting_get("language")
@@ -55,13 +56,43 @@ if use_text_files then
 
 	-- look for the files
 	for i=1,5,1  do
-		local path = rep.."/locale/"..LANG.."/serverguide_tab_"..i..".txt"
-		local file = io.open(path,"r")
-		-- localized not found look for english version
-		if not file and prefer_english_file_to_text then 
-			file = rep.."/locale/en/serverguide_tab_"..i..".txt"
-			file = io.open(path,"r")
-		end
+	
+		-- look in world rep
+		local wrep = minetest.get_worldpath(MOD_NAME)
+		local wpath = wrep.."/serverguide_tab_"..i.."_"..LANG..".txt"
+		local file = io.open(wpath,"r")
+		
+		-- file not found
+		-- look in mod rep
+		if not file then 
+			-- Define file to write
+			local output = io.open(wpath,"w")
+		
+			-- look in locale rep
+			local lrep = minetest.get_modpath(MOD_NAME)
+			local lpath = lrep.."/serverguide_tab_"..i.."_"..LANG..".txt"
+			local lfile = io.open(lpath,"r")
+
+			local lpath = lrep.."/locale/"..LANG.."/serverguide_tab_"..i..".txt"
+			local lfile = io.open(lpath,"r")
+			-- locale not found look for english version
+			if not lfile and prefer_english_file_to_text then 
+				lpath = lrep.."/locale/en/serverguide_tab_"..i..".txt"
+				lfile = io.open(lpath,"r")
+			end
+			
+			-- Something was found write to world rep file
+			if lfile then
+				-- write file content to the one in worldpath
+				local content = lfile:read("*all")
+				output:write(content)
+				io.close(output)
+				io.close(lfile)
+				-- Open file in world rep
+				file = io.open(wpath,"r")
+			end	
+		end 			
+	
 		-- if input file exist
 		if file then 
 			lines = {}
@@ -73,7 +104,7 @@ if use_text_files then
 			serverguide_Tab_Text[i] = table.concat(lines,"\n")
 			io.close(file)
 		end	
-	end 
+	end	
 end
 
 
