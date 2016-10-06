@@ -24,6 +24,8 @@ This edit does that :
 - Replace label by textarea in formspec for automatic break lines
 - Add use of files for tab content 
 - Add option to add to inventory to add to inventory of new player
+- Tab content files stored in world folder, so rules can be world specific
+    Look for file and create it if need when server start
 
 
 
