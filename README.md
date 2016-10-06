@@ -25,7 +25,7 @@ This edit does that :
 - Add use of files for tab content 
 - Add option to add to inventory to add to inventory of new player
 - Tab content files stored in world folder, so rules can be world specific
-    Look for file and create it if need when server start
+\n (Look for file and create it if need when server start )
 
 
 
