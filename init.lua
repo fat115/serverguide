@@ -1,24 +1,90 @@
-local serverguide_Book_title="The server guide"
+-------------
+-- OPTIONS --
 
-local serverguide_Tab_Text_1="Server info\n Type /guide to see this"
-local serverguide_Tab_Text_2="Server Rules \nNo ask for privs or admin stuff \nNo swearing or bad names (like God, fuc...)\nNo griefing\nNo bad stealing or steal people's usernames\nNo hacking\nDon't mess up with moderators or admins"
-local serverguide_Tab_Text_3="Rulers info (moderator or admins)"
-local serverguide_Tab_Text_4="Commands:\nSet your home with /sethome say /home to teleport back \nSee who are online /status"
-local serverguide_Tab_Text_5="Help info\nHelp you self\n Only call a moderator or admin if you\n get problems that you cant fix it by own"
+-- Use text from files
+local use_text_files = true
+-- Should the script look for english file before using strings if file not found in user langage
+local prefer_english_file_to_text = true
+-- Add to inventory option
+-- 	set to 'true' to add to new player inventory
+--  set to 'false to not add
+--	set to 'minetest.setting_getbool("give_initial_stuff")' to make it depend on the give inital stuff option
+local add_to_inventory = false
+-------------
 
-local serverguide_Tab_1="Server"
-local serverguide_Tab_2="Rules"
-local serverguide_Tab_3="Rulers"
-local serverguide_Tab_4="Commands"
-local serverguide_Tab_5="Help"
+-- Boilerplate to support localized strings if intllib mod is installed.
+local S
+if minetest.get_modpath("intllib") then
+	S = intllib.Getter()
+else
+	S = function(s) return s end
+end
+
+-- Server guide title
+local serverguide_Book_title=S("The server guide")
+-- Tabs title
+local serverguide_Tab_1=S("Server")
+local serverguide_Tab_2=S("Rules")
+local serverguide_Tab_3=S("Rulers")
+local serverguide_Tab_4=S("Commands")
+local serverguide_Tab_5=S("Help")
+
+
+serverguide_Tab_Text = {}
+serverguide_Tab_Text[1]=S("Server info\n Type /guide to see this")
+serverguide_Tab_Text[2]=S("Server Rules \nNo ask for privs or admin stuff \nNo swearing or bad names (like God, fuc...)\nNo griefing\nNo bad stealing or steal people's usernames\nNo hacking\nDon't mess up with moderators or admins")
+serverguide_Tab_Text[3]=S("Rulers info (moderator or admins)")
+serverguide_Tab_Text[4]=S("Commands:\nSet your home with /sethome say /home to teleport back \nSee who are online /status")
+serverguide_Tab_Text[5]=S("Help info\nHelp you self\n Only call a moderator or admin if you\n get problems that you cant fix it by own")
+
+
+
+-- look for text files to use text files if present
+if use_text_files then 
+	-- Text files folder
+	local MOD_NAME = minetest.get_current_modname()
+	-- Path to the text files
+	-- Use minetest.get_worldpath() to use world specific messages
+	local rep = minetest.get_modpath(MOD_NAME)
+	
+	-- Define langage (code from intllib mod)
+	local LANG = minetest.setting_get("language")
+	if not (LANG and (LANG ~= "")) then LANG = os.getenv("LANG") end
+	if not (LANG and (LANG ~= "")) then LANG = "en" end
+	LANG = LANG:sub(1, 2)
+
+	-- look for the files
+	for i=1,5,1  do
+		local path = rep.."/locale/"..LANG.."/serverguide_tab_"..i..".txt"
+		local file = io.open(path,"r")
+		-- localized not found look for english version
+		if not file and prefer_english_file_to_text then 
+			file = rep.."/locale/en/serverguide_tab_"..i..".txt"
+			file = io.open(path,"r")
+		end
+		-- if input file exist
+		if file then 
+			lines = {}
+			-- read the file
+			for line in file:lines() do 
+				lines[#lines + 1] = line
+			end
+			-- set tab content
+			serverguide_Tab_Text[i] = table.concat(lines,"\n")
+			io.close(file)
+		end	
+	end 
+end
+
+
 
 local function serverguide_guide(user,text_to_show)
 local text=""
-if text_to_show==1 then text=serverguide_Tab_Text_1 end
-if text_to_show==2 then text=serverguide_Tab_Text_2 end
-if text_to_show==3 then text=serverguide_Tab_Text_3 end
-if text_to_show==4 then text=serverguide_Tab_Text_4 end
-if text_to_show==5 then text=serverguide_Tab_Text_5 end
+if text_to_show==1 then text=serverguide_Tab_Text[1] end
+if text_to_show==2 then text=serverguide_Tab_Text[2] end
+if text_to_show==3 then text=serverguide_Tab_Text[3] end
+if text_to_show==4 then text=serverguide_Tab_Text[4] end
+if text_to_show==5 then text=serverguide_Tab_Text[5] end
 
 local form="size[8.5,9]" ..default.gui_bg..default.gui_bg_img..
 	"button[0,0;1.5,1;tab1;" .. serverguide_Tab_1 .. "]" ..
@@ -27,7 +93,7 @@ local form="size[8.5,9]" ..default.gui_bg..default.gui_bg_img..
 	"button[4.5,0;1.5,1;tab4;" .. serverguide_Tab_4 .. "]" ..
 	"button[6,0;1.5,1;tab5;" .. serverguide_Tab_5 .. "]" ..
 	"button_exit[7.5,0; 1,1;tab6;X]" ..
-	"label[0,1;"..text .."]"
+	"textarea[0.3,1.1;8,7.5;;"..minetest.formspec_escape(text)..";]"
 minetest.show_formspec(user:get_player_name(), "serverguide",form)
 end
 
@@ -42,9 +108,11 @@ minetest.register_on_player_receive_fields(function(player, form, pressed)
 end)
 
 
-minetest.register_tool("serverguide:book", {
+minetest.register_craftitem("serverguide:book", {
 	description = serverguide_Book_title,
-	inventory_image = "default_book.png",
+	inventory_image = "default_book.png^[colorize:#ffff00:100",
+	-- Can be stored in bookshelves
+	groups = {book=1},
 	on_use = function(itemstack, user, pointed_thing)
 	serverguide_guide(user,1)
 	return itemstack
@@ -100,9 +168,13 @@ end
 
 })
 
-minetest.register_on_newplayer(function(player)
-player:get_inventory():add_item("main", "serverguide:book")
+
+minetest.register_on_newplayer(function(player) 
+	if add_to_inventory then
+		player:get_inventory():add_item("main", "serverguide:book")
+	end
 end)
+
 
 minetest.register_chatcommand("guide", {
 	params = "",
