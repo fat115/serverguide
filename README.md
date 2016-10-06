@@ -1,8 +1,14 @@
 # serverguide
 
+
 Edited from serverguide mod by UjEdwin
 https://forum.minetest.net/viewtopic.php?f=11&t=13366
 
+"A easy way to make your own serverguide!
+All new players will get ther own books.
+You can easy add / change tabs, content and the title of it."
+
+This edit does that :
 - Add internationalization support (intllib) and french translation 
 - Colorize book
 - Change book from tool to item and add group book so it can be placed in bookshelves
