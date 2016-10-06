@@ -10,7 +10,7 @@ All new players will get ther own books.
 You can easy add / change tabs, content and the title of it."
 
 This edit does that :
-- Add internationalization support (intllib) and french translation 
+- Add internationalization support (intllib : https://forum.minetest.net/viewtopic.php?t=4929) and french translation 
 - Colorize book
 - Change book from tool to item and add group book so it can be placed in bookshelves
 - Replace label by textarea in formspec for automatic break lines
