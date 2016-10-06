@@ -25,7 +25,8 @@ This edit does that :
 - Add use of files for tab content 
 - Add option to add to inventory to add to inventory of new player
 - Tab content files stored in world folder, so rules can be world specific
-\n (Look for file and create it if need when server start )
+
+ = Look for file and create it if need when server start ( works a lot like this : https://github.com/arsdragonfly/random_messages )
 
 
 
