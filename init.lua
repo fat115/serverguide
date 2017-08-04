@@ -12,13 +12,9 @@ local prefer_english_file_to_text = true
 local add_to_inventory = false
 -------------
 
--- Boilerplate to support localized strings if intllib mod is installed.
-local S
-if minetest.get_modpath("intllib") then
-	S = intllib.Getter()
-else
-	S = function(s) return s end
-end
+-- Load support for intllib.
+local MP = minetest.get_modpath(minetest.get_current_modname())
+local S, NS = dofile(MP.."/intllib.lua")
 
 -- Server guide title
 local serverguide_Book_title=S("The server guide")

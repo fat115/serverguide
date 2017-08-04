@@ -1,5 +1,0 @@
-Server = 
-Rule = 
-Rulers = 
-Commands = 
-Help = 

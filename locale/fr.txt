@@ -1,5 +1,0 @@
-Server = Serveur
-Rules = Règles
-Rulers = Moderateurs
-Commands = Commandes
-Help = Aide
